@@ -1257,6 +1257,12 @@ const CHARS = {
   meng:{ name:'周萌萌', qq:'2019447788', em:'🍡', c1:'#d8799f', c2:'#3a1728', on:true,
     sig:'嗑到了，谢谢。', birth:'6月1日', city:'本市 · 大学城', job:'大二在读',
     tags:['嗑CP','嘴快','奶茶','护哥','但更护你'], rel:'周信之的妹妹' },
+  man:{ name:'田小满', qq:'1847302655', em:'🍜', c1:'#c9884a', c2:'#33200f', on:true,
+    sig:'今天吃什么，是个大问题。', birth:'5月20日', city:'本市 · 老城区', job:'便利店店长 / 你的室友',
+    tags:['室友','嘴碎','投喂狂','夜宵搭子','直球'], rel:'和你合租的室友' },
+  mama:{ name:'妈妈', qq:'527014863', em:'🧶', c1:'#8a7fa8', c2:'#2a2436', on:false,
+    sig:'家里都好，你别担心。', birth:'', city:'老家 · 县城', job:'退休教师',
+    tags:['唠叨','寄东西','心疼你','催相亲','报喜不报忧'], rel:'你妈' },
   me:{ name:'你', qq:'', em:'🫧', c1:'#5d8fd6', c2:'#1a2a44', on:true,
     sig:'在别人的故事里，先把自己写清楚。', birth:'', city:'本市', job:'',
     tags:['观察者','夜猫子','会把话想三遍'], rel:'你' }
@@ -1347,6 +1353,26 @@ const SLOTS = [
       ]),
       SYS('沈禹 请求添加你为好友 · 附言：那部手机……可能是我的。','14:40'),
       N('你没有立刻点通过。')
+    ]},
+    { th:'man', steps:[
+      DIV('18:50','周一 · 傍晚'),
+      N('你回到家，钥匙还没插进锁孔，门就从里面开了。'),
+      T('man','你可算回来了。','18:42'),
+      T('man','冰箱里那碗粥我热第三遍了。再热就成糊了。','18:42'),
+      T('man','对了，今天有个男的打座机找你。','18:43'),
+      T('man','声音挺低，说话跟没气似的。问我你是不是一个人住。','18:43'),
+      T('man','我没说。我就说这屋里住了八个人。','18:44'),
+      N('你一下就想到是谁。'),
+      C([
+        { label:'他还说了什么', fx:{ truth:1, heart:1 }, reply:'他还说了什么？',
+          then:[ T('man','他说让你别把手机交给错的人。','18:46'), T('man','然后就挂了。连再见都没讲。','18:46'), N('小满把粥端出来，又补了一句：我觉得他挺可怜的。') ] },
+        { label:'以后别接陌生电话', fx:{ heart:1, risk:1 }, reply:'以后别接陌生电话。',
+          then:[ T('man','行。那我下次先问清楚姓名年龄身高。','18:46'), T('man','开玩笑的。你脸色怎么这么白。','18:47') ] },
+        { label:'先吃饭，我饿了', fx:{ heart:2 }, reply:'先吃饭，我饿了。',
+          then:[ T('man','就等你这句话。','18:45'), T('man','碗在锅里，自己盛。我给你卧了个蛋。','18:45') ] }
+      ]),
+      T('man','吃完早点睡。你今天眼睛都是红的。','18:55'),
+      N('你低头喝粥。手机在口袋里，轻轻震了一下，又停了。')
     ]}
   ]
 },
@@ -1601,6 +1627,26 @@ const SLOTS = [
       T('yu','便签上写了字。你要是不想看，就扔了吧。'),
       N('便签上写着：如果你不想见我，就当我没来过。'),
       N('字很小，像怕惊动谁。')
+    ]},
+    { th:'mama', steps:[
+      DIV('20:10','周四 · 夜'),
+      SYS('妈妈 发起了语音通话 · 未接','20:02'),
+      N('你回拨过去。响了很久，久到你以为她睡了。'),
+      T('mama','囡囡？','20:11'),
+      V('mama','（语音）妈没事。就是今天收拾柜子，翻到你小时候那本相册。',21,'20:12'),
+      T('mama','你那时候胖，脸圆。现在肯定又瘦了。','20:12'),
+      T('mama','工作累不累？累就回来住几天。你那间屋我一直给你留着。','20:13'),
+      T('mama','你爸嘴硬，说不用管你。今天还偷偷问我，你最近有没有打电话。','20:13'),
+      C([
+        { label:'我挺好的，别担心', fx:{ heart:1 }, reply:'我挺好的，别担心。',
+          then:[ T('mama','你说好，妈就信。','20:16'), T('mama','你从小就会报喜不报忧。','20:16') ] },
+        { label:'妈，我最近有点乱', fx:{ heart:2, truth:1 }, reply:'妈，我最近有点乱。',
+          then:[ T('mama','乱就慢慢理。理不清就先睡觉。','20:16'), T('mama','天塌不下来。真塌了，你先回家。','20:17') ] },
+        { label:'我过两天回去', fx:{ heart:2 }, reply:'我过两天回去。',
+          then:[ T('mama','真的？那我明天就把被子晒了。','20:16'), T('mama','你爸听见了，肯定装没听见。','20:17') ] }
+      ]),
+      T('mama','行了，不说了，电话费贵。','20:20'),
+      N('挂了电话，你在原地站了一会儿。窗外有人骑车经过，铃声很轻。')
     ]}
   ]
 },
@@ -1741,6 +1787,24 @@ const SLOTS = [
       T('xin','那我明天不来了。','23:34'),
       T('xin','……骗你的。','23:35'),
       N('你看见楼下的车灯亮了一下，又灭了。')
+    ]},
+    { th:'man', steps:[
+      DIV('23:50','周日 · 夜'),
+      T('man','你还没睡？','23:47'),
+      T('man','我刚下班，看见你屋里灯还亮着。','23:47'),
+      T('man','我不问你怎么了。我就坐这儿吃个宵夜。','23:48'),
+      N('她真的搬了个小板凳，坐在你房门口，捧着一盒炒面。'),
+      T('man','你要不要吃一口。就一口。','23:49'),
+      C([
+        { label:'我没事，你吃吧', fx:{ heart:1 }, reply:'我没事，你吃吧。',
+          then:[ T('man','行。你说没事就没事。','23:52'), N('她吃完了也没走，就靠着门框刷手机。') ] },
+        { label:'我好像喜欢上了一个不该喜欢的人', fx:{ heart:2, truth:1 }, reply:'我好像喜欢上了一个不该喜欢的人。',
+          then:[ T('man','那就先喜欢着。','23:52'), T('man','喜欢又不犯法。犯法的是他。','23:53'), T('man','……我这是安慰你还是警告你。','23:53') ] },
+        { label:'帮我个忙，别告诉任何人我住这儿', fx:{ risk:1, truth:1 }, reply:'帮我个忙，别告诉任何人我住这儿。',
+          then:[ T('man','……','23:52'), T('man','你这话说得我有点怕。','23:53'), T('man','行。我不说。','23:53'), N('她把门带上了，留了一条缝。') ] }
+      ]),
+      T('man','睡吧。明天我煮面。','23:58'),
+      N('房间安静下来。门外传来她吸面条的声音，很小，很日常。')
     ]}
   ]
 },
@@ -1816,14 +1880,95 @@ const SLOTS = [
 }
 ];
 
-/* 额外氛围消息：时段开始即到达 */
+/* 额外氛围消息：时段开始即到达。每个人说话的方式都不一样 */
 const AMBIENT = {
-  2:[{th:'team',who:'meng',body:'今天也是想嗑CP的一天。',tm:'08:02'}],
-  4:[{th:'team',who:'qing',body:'周六聚会，别迟到。',tm:'08:05'}],
-  7:[{th:'team',who:'meng',body:'今晚谁都不许哭啊。',tm:'08:07'}],
-  10:[{th:'team',who:'xin',body:'咖啡店我订了。靠窗。',tm:'09:00'}],
-  13:[{th:'team',who:'meng',body:'我带了相机！',tm:'08:10'}],
-  16:[{th:'team',who:'qing',body:'人都到了吗。',tm:'08:08'}]
+  0:[
+    {th:'man',who:'man',body:'粥在锅里，小火。你回来自己关。',tm:'07:52'},
+    {th:'man',who:'man',body:'钥匙我塞鞋柜上了，别又蹲门口等我。',tm:'08:06'}
+  ],
+  1:[
+    {th:'mama',who:'mama',body:'囡囡，落地了没？到了给妈报个平安。',tm:'12:40'},
+    {th:'man',who:'man',body:'楼下开了家糖水铺。晚上去不去，我请。',tm:'15:30'}
+  ],
+  2:[
+    {th:'mama',who:'mama',body:'别老熬夜，眼睛要紧。你爸嘴上不说，天天翻你朋友圈。',tm:'22:20'},
+    {th:'man',who:'man',body:'粥我热过了，在锅里。你进门别踩着猫。',tm:'23:20'}
+  ],
+  3:[
+    {th:'man',who:'man',body:'早上有人敲门送快递，我替你签了，放你桌上了。你买的啥，这么沉。',tm:'08:25'},
+    {th:'mama',who:'mama',body:'你爸把腊肠寄出去了，记得收，别又放到长毛。',tm:'09:05'}
+  ],
+  4:[
+    {th:'man',who:'man',body:'冰箱第二层有饭。你要点外卖也行，记得点我爱吃的。',tm:'12:35'},
+    {th:'mama',who:'mama',body:'今天热不热，多喝水。你上次说嗓子疼，好了没？',tm:'14:10'}
+  ],
+  5:[
+    {th:'mama',who:'mama',body:'你王姨又问你有对象没。我说没有。她不信，说这么好看的姑娘怎么可能。',tm:'20:40'},
+    {th:'man',who:'man',body:'炸鸡买一送一，我给你留了半桶。别谢，谢就吃完。',tm:'23:05'}
+  ],
+  6:[
+    {th:'man',who:'man',body:'你伞落门口了。今天有雨，记得带。',tm:'08:10'},
+    {th:'mama',who:'mama',body:'早饭吃了没？别空着肚子出门。',tm:'08:45'},
+    {th:'team',who:'xin',body:'今晚谁有空，帮我投个票，链接发群里了。',tm:'09:02'}
+  ],
+  7:[
+    {th:'man',who:'man',body:'今晚我值夜班，门别反锁。',tm:'15:20'},
+    {th:'qing',who:'qing',body:'周末的局，别带那部手机。',tm:'16:10'}
+  ],
+  8:[
+    {th:'mama',who:'mama',body:'你睡了吗？妈没什么事，就是想听听你声音。',tm:'22:50'},
+    {th:'man',who:'man',body:'你今天回来好晚。锅里给你留了汤，自己热。',tm:'23:30'}
+  ],
+  9:[
+    {th:'man',who:'man',body:'你晾的衣服我收了，别嫌我叠得丑。',tm:'07:50'},
+    {th:'mama',who:'mama',body:'天凉了，加件外套。你从小就不知道冷。',tm:'08:20'}
+  ],
+  10:[
+    {th:'man',who:'man',body:'猫在你床上打滚，我给你拍了照，回头发你。',tm:'13:30'},
+    {th:'mama',who:'mama',body:'腊肠到了没？到了切一段蒸，别整根扔锅里煮。',tm:'15:00'}
+  ],
+  11:[
+    {th:'man',who:'man',body:'关东煮给你带了一份，挂门把上了。萝卜我吃了，别找了。',tm:'21:00'},
+    {th:'mama',who:'mama',body:'你爸今天去体检，没事。就是血压高点。你别担心。',tm:'21:40'}
+  ],
+  12:[
+    {th:'man',who:'man',body:'我昨晚梦见你捡了个男朋友，还是两个。',tm:'08:10'},
+    {th:'mama',who:'mama',body:'周末回家吗？不回也没事，妈就是问问。',tm:'08:35'}
+  ],
+  13:[
+    {th:'man',who:'man',body:'你今天脸色不好。回来泡个脚，水我给你烧上。',tm:'17:10'},
+    {th:'qing',who:'qing',body:'证据别落在对方手里。谁的证据都一样。',tm:'17:40'},
+    {th:'meng',who:'meng',body:'晚晚姐！我哥今天怪怪的，你帮我看看他是不是病了！',tm:'18:20'}
+  ],
+  14:[
+    {th:'mama',who:'mama',body:'想吃什么？妈给你寄。别客气，客气我生气。',tm:'21:50'},
+    {th:'man',who:'man',body:'你最近老盯着手机笑。我不问，我就看看。',tm:'22:10'}
+  ],
+  15:[
+    {th:'man',who:'man',body:'降温了，穿厚点。你衣柜最上面那件。',tm:'07:40'},
+    {th:'mama',who:'mama',body:'你爸说想你了。他说不出口，我替他说。',tm:'08:05'}
+  ],
+  16:[
+    {th:'man',who:'man',body:'你早上钥匙插门上忘拔了，我给你拔了。',tm:'11:30'},
+    {th:'mama',who:'mama',body:'你表姐问你要不要介绍对象。我说你忙。',tm:'13:00'}
+  ],
+  17:[
+    {th:'man',who:'man',body:'今晚我煮了汤，回来喝。别说不饿。',tm:'21:20'},
+    {th:'mama',who:'mama',body:'早点睡。别想太多，想不通就回家。',tm:'22:00'}
+  ],
+  18:[
+    {th:'man',who:'man',body:'你昨晚说梦话，喊了个人名。我没听清。',tm:'09:15'},
+    {th:'mama',who:'mama',body:'妈给你转了两百，买点好吃的。别退回来。',tm:'09:40'},
+    {th:'team',who:'meng',body:'我哥今天做了件丢人的事，笑死我了，等下讲给你们听！',tm:'20:30'}
+  ],
+  19:[
+    {th:'man',who:'man',body:'你今天出门忘带伞了。外面阴得厉害。',tm:'14:30'},
+    {th:'mama',who:'mama',body:'相亲那事妈不逼你。你自己过得舒服就行。',tm:'15:00'}
+  ],
+  20:[
+    {th:'man',who:'man',body:'今晚我不回家，你自己吃。别又对付一口。',tm:'19:20'},
+    {th:'mama',who:'mama',body:'不管怎么样，家里都在。',tm:'20:00'}
+  ]
 };
 
 /* ---------------- QQ 空间 / 朋友圈 ---------------- */
@@ -2069,7 +2214,7 @@ let callTimer = null;
 const PHASE_TM = ['08:40','14:20','23:10'];
 const PHASE_NAME = ['早','午','夜'];
 const DAYS = ['周一','周二','周三','周四','周五','周六','周日'];
-const CHAT_ORDER = ['team','yu','xin','qing','meng'];
+const CHAT_ORDER = ['team','yu','xin','man','mama','qing','meng'];
 const ART_EM = { airport:'✈', rain:'☔', cat:'🐈‍⬛', gym:'🏋', coffee:'☕', girl:'👤', shelf:'📜', screen:'🎮', shell:'📱', phone:'📱', sky:'🌙', lights:'🏮' };
 const STICKERS = [
   { k:'sigh', em:'😮‍💨' },{ k:'hug', em:'🫂' },{ k:'cry', em:'🥺' },{ k:'caught', em:'😳' },
@@ -2239,11 +2384,11 @@ function newState(name, profKey){
     money:p.money,
     stats:{ yu:0, xin:0, qing:0, meng:0, heart:0, truth:0, risk:0 },
     clues:[], flags:{},
-    chats:{ team:[], yu:[], xin:[], qing:[], meng:[] },
-    unread:{ team:0, yu:0, xin:0, qing:0, meng:0 },
+    chats:{ team:[], yu:[], xin:[], qing:[], meng:[], man:[], mama:[] },
+    unread:{ team:0, yu:0, xin:0, qing:0, meng:0, man:0, mama:0 },
     previews:{},
     scripts:{}, typing:null,
-    unlocked:['team','yu','xin'],
+    unlocked:['team','yu','xin','man','mama'],
     view:{ name:'chats' },
     phoneUnlocked:false,
     passFails:0, passFailDay:0, passLockDay:0,
@@ -2334,6 +2479,11 @@ function startSlot(){
   S.typing = null;
   if(idx >= 7 && S.unlocked.indexOf('qing') < 0) S.unlocked.push('qing');
   if(idx >= 9 && S.unlocked.indexOf('meng') < 0) S.unlocked.push('meng');
+  ['man','mama'].forEach(k => {
+    if(!S.chats[k]) S.chats[k] = [];
+    if(S.unread[k] === undefined) S.unread[k] = 0;
+    if(S.unlocked.indexOf(k) < 0) S.unlocked.push(k);
+  });
   const slot = SLOTS[idx];
   slot.scenes.forEach(sc => {
     const st = { steps: sc.steps.slice(), i:0, waiting:false, done:false, running:false, final:!!slot.final, th:sc.th };
