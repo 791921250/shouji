@@ -22,8 +22,8 @@
   --blue:#0a84ff;
   --red:#ff453a;
   --gold:#f0c987;
-  --lockwall:url('img/4ab1812d.jpg');
-  --phonewall:url('img/eba2cd33.jpg');
+  --lockwall:url('img/4ab1812d.webp');
+  --phonewall:url('img/eba2cd33.webp');
   --sans:"PingFang SC","HarmonyOS Sans SC","Noto Sans SC","Microsoft YaHei",system-ui,sans-serif;
   --serif:"Songti SC","Noto Serif SC","STSong",serif;
 }
@@ -244,7 +244,7 @@ button{background:none;border:0;cursor:pointer;font-size:inherit}
 .phone.theme-green{--bg:#0b1411;--bg2:#101d18;--card:#14241d;--card2:#1d332a;--txt:#eafff3;--subT:#9db8aa;--ln:rgba(255,255,255,.09);--acc:#2fd39a;--me:#1f9e75;--meT:#fff;--ot:#1d332a;--otT:#eafff3;--bar:#0b1411;--sysT:#8da99b;--narrT:#7f9a8c;--chip:#15251e;--strip:#0f1b16;--money:#ffc46b}
 .phone.theme-cyber{--bg:#0a0618;--bg2:#110a26;--card:#171033;--card2:#241a4a;--txt:#eee9ff;--subT:#a294d8;--ln:rgba(160,120,255,.16);--acc:#b06bff;--me:#7a3cff;--meT:#fff;--ot:#241a4a;--otT:#eee9ff;--bar:#0a0618;--sysT:#9a8bcb;--narrT:#8b7cb8;--chip:#171033;--strip:#0d0820;--money:#ffd166}
 /* 绿白主题头像横幅：只作用于玩家自己的手机 */
-.phone.wall-mint{--wall:url("img/0f7ea50b.jpg")}
+.phone.wall-mint{--wall:url("img/0f7ea50b.webp")}
 .phone.wall-mint .mecover{background-image:var(--wall);background-size:cover;background-position:center top;background-repeat:no-repeat}
 .phone.wall-mint .mecover .lay{background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,0) 58%,var(--bg) 100%)}
 
@@ -1124,7 +1124,7 @@ body::after{opacity:.02}
 
 <!-- ============ 开机启动页 ============ -->
 <div class="splash" id="splash">
-  <img src="img/ca7d926d.jpg" alt="拴Q">
+  <img src="img/ca7d926d.webp" alt="拴Q">
   <div class="brand">拴Q</div>
   <div class="foot">长夜聊天体 · 单文件离线版</div>
 </div>
@@ -1219,26 +1219,26 @@ body::after{opacity:.02}
    stickers 建议透明底 PNG（240×240）
    ========================================================= */
 const ASSETS = {
-  avatars: { yu:'img/dd78c50f.jpg', yu_old:'img/662c4f3c.jpg', xin:'img/64c4f557.jpg', qing:'img/bf1490d3.jpg', meng:'img/5c3296ee.jpg', me:'' },
-  covers:  { yu:'img/8ce1058c.jpg', xin:'', qing:'', meng:'img/29fc54f5.jpg' },
-  posts:   { airport:'img/6dd216f4.jpg', rain:'', cat:'', gym:'img/11030c3f.jpg', coffee:'', girl:'', shelf:'', lights:'', food:'img/2e21cd02.jpg' , food2:'img/99fa9725.jpg', food3:'img/081c6035.jpg', food4:'img/e03e099f.jpg', food5:'img/a70902e5.jpg', food6:'img/5bc5047e.jpg', rainroad:'img/05333528.jpg', inkcat:'img/5fb205a3.jpg', coffee1:'img/e6b4363e.jpg',
-    girl2:'img/b6e68f27.jpg',
-    screen2:'img/66b569cf.jpg',
-  shell:'img/9d3295ad.jpg',
-  cat:'img/5fb205a3.jpg' },
-  stickers:{sigh:'img/82d25346.jpg',hug:'img/b87f5459.jpg',cry:'img/f8f4c74a.jpg',caught:'img/d68cd318.jpg',tease:'img/cce31222.jpg',angry:'img/37100c48.jpg',secret:'img/f0aaeaf5.jpg',look:'img/fda80cf7.jpg',wronged:'img/53bc02d6.jpg',ghost:'img/4f258fc7.jpg',
-    beat:'img/ec786432.jpg',
-    bold:'img/51abbdee.jpg',
-    fat:'img/1f7de540.jpg',
-    punch:'img/9e6f7ba1.jpg',
-    yes:'img/01b0f798.jpg',
-    miss:'img/c33601d9.jpg',
-    snack:'img/6e4cc826.jpg',
-    sparkle:'img/3f0550e8.jpg',
-    what:'img/1dc4d29e.jpg',
-    plot:'img/96f968e4.jpg',
-    door:'img/2ef57d93.jpg',
-    drama:'img/854ac329.jpg'}
+  avatars: { yu:'img/dd78c50f.webp', yu_old:'img/662c4f3c.webp', xin:'img/64c4f557.webp', qing:'img/bf1490d3.webp', meng:'img/5c3296ee.webp', me:'' },
+  covers:  { yu:'img/8ce1058c.webp', xin:'', qing:'', meng:'img/29fc54f5.webp' },
+  posts:   { airport:'img/6dd216f4.webp', rain:'', cat:'', gym:'img/11030c3f.webp', coffee:'', girl:'', shelf:'', lights:'', food:'img/2e21cd02.webp' , food2:'img/99fa9725.webp', food3:'img/081c6035.webp', food4:'img/e03e099f.webp', food5:'img/a70902e5.webp', food6:'img/5bc5047e.webp', rainroad:'img/05333528.webp', inkcat:'img/5fb205a3.webp', coffee1:'img/e6b4363e.webp',
+    girl2:'img/b6e68f27.webp',
+    screen2:'img/66b569cf.webp',
+  shell:'img/9d3295ad.webp',
+  cat:'img/5fb205a3.webp' },
+  stickers:{sigh:'img/82d25346.webp',hug:'img/b87f5459.webp',cry:'img/f8f4c74a.webp',caught:'img/d68cd318.webp',tease:'img/cce31222.webp',angry:'img/37100c48.webp',secret:'img/f0aaeaf5.webp',look:'img/fda80cf7.webp',wronged:'img/53bc02d6.webp',ghost:'img/4f258fc7.webp',
+    beat:'img/ec786432.webp',
+    bold:'img/51abbdee.webp',
+    fat:'img/1f7de540.webp',
+    punch:'img/9e6f7ba1.webp',
+    yes:'img/01b0f798.webp',
+    miss:'img/c33601d9.webp',
+    snack:'img/6e4cc826.webp',
+    sparkle:'img/3f0550e8.webp',
+    what:'img/1dc4d29e.webp',
+    plot:'img/96f968e4.webp',
+    door:'img/2ef57d93.webp',
+    drama:'img/854ac329.webp'}
 };
 const A = k => ASSETS.avatars[k] || '';
 const P = k => ASSETS.posts[k] || '';
@@ -1943,16 +1943,16 @@ const FRAMES = [
 ];
 const BACKGROUNDS = [
   { key:'none', name:'默认', price:0, free:true },
-  { key:'w1', name:'云边', price:350, img:'img/122c6522.jpg', tone:'light' },
-  { key:'w2', name:'花期', price:400, img:'img/c7a4bff4.jpg', tone:'light' },
-  { key:'w3', name:'咖啡与稿纸', price:500, img:'img/31d8e371.jpg', tone:'light' },
-  { key:'w4', name:'三明治午后', price:500, img:'img/eb501410.jpg', tone:'light' },
-  { key:'w5', name:'竹林深处', price:450, img:'img/cc2339b3.jpg', tone:'dark' },
-  { key:'w6', name:'青雾', price:400, img:'img/bc2abe75.jpg', tone:'light' },
-  { key:'w7', name:'蓝蝶', price:550, img:'img/1b8d6b4d.jpg', tone:'light' },
-  { key:'w8', name:'极光海岸', price:700, img:'img/47046adf.jpg', tone:'dark' },
-  { key:'w9', name:'银河', price:650, img:'img/3481a53b.jpg', tone:'dark' },
-  { key:'w10', name:'雪屋', price:600, img:'img/dc9c901d.jpg', tone:'light' }
+  { key:'w1', name:'云边', price:350, img:'img/122c6522.webp', tone:'light' },
+  { key:'w2', name:'花期', price:400, img:'img/c7a4bff4.webp', tone:'light' },
+  { key:'w3', name:'咖啡与稿纸', price:500, img:'img/31d8e371.webp', tone:'light' },
+  { key:'w4', name:'三明治午后', price:500, img:'img/eb501410.webp', tone:'light' },
+  { key:'w5', name:'竹林深处', price:450, img:'img/cc2339b3.webp', tone:'dark' },
+  { key:'w6', name:'青雾', price:400, img:'img/bc2abe75.webp', tone:'light' },
+  { key:'w7', name:'蓝蝶', price:550, img:'img/1b8d6b4d.webp', tone:'light' },
+  { key:'w8', name:'极光海岸', price:700, img:'img/47046adf.webp', tone:'dark' },
+  { key:'w9', name:'银河', price:650, img:'img/3481a53b.webp', tone:'dark' },
+  { key:'w10', name:'雪屋', price:600, img:'img/dc9c901d.webp', tone:'light' }
 ];
 const WORK_DEF = {
   reporter:{ co:'《城市晚报》社会部', boss:'陈主编', tasks:['今晚头条：暴雨中的外卖员','追踪：地铁末班车上的陌生人','特稿：只在凌晨营业的便利店','深度：被雨困住的那场婚礼','突发：老城区停电十二小时'], reward:1400,
@@ -1986,19 +1986,19 @@ const WORK_URGENTS = [
 ];
 /* 工作机头像：我（小猫）/ 老板（黑衣） */
 const WK_AV = {
-  me:'img/fc9495af.jpg',
-  boss:'img/5be9066d.jpg',
+  me:'img/fc9495af.webp',
+  boss:'img/5be9066d.webp',
 };
 
 const FACE_AVATARS = [
-  { key:'face1', face:true, name:'夜航', em:'', price:900, c1:'#3a3a44', c2:'#14141a', img:'img/b09f584e.jpg' },
-  { key:'face2', face:true, name:'逆光', em:'', price:1000, c1:'#3a3a44', c2:'#14141a', img:'img/1bdb55d5.jpg' },
-  { key:'face3', face:true, name:'蝶栖', em:'', price:1100, c1:'#3a3a44', c2:'#14141a', img:'img/e46142ef.jpg' },
-  { key:'face4', face:true, name:'深林', em:'', price:1000, c1:'#3a3a44', c2:'#14141a', img:'img/e3316325.jpg' },
-  { key:'face5', face:true, name:'青苔', em:'', price:900, c1:'#3a3a44', c2:'#14141a', img:'img/59bfa3f4.jpg' },
-  { key:'face6', face:true, name:'晚风', em:'', price:800, c1:'#3a3a44', c2:'#14141a', img:'img/6a6131d0.jpg' },
-  { key:'face7', face:true, name:'长夜', em:'', price:0, free:true, c1:'#3a3a44', c2:'#14141a', img:'img/49f3efe7.jpg' },
-  { key:'face8', face:true, name:'线稿', em:'', price:700, c1:'#3a3a44', c2:'#14141a', img:'img/465e5412.jpg' }
+  { key:'face1', face:true, name:'夜航', em:'', price:900, c1:'#3a3a44', c2:'#14141a', img:'img/b09f584e.webp' },
+  { key:'face2', face:true, name:'逆光', em:'', price:1000, c1:'#3a3a44', c2:'#14141a', img:'img/1bdb55d5.webp' },
+  { key:'face3', face:true, name:'蝶栖', em:'', price:1100, c1:'#3a3a44', c2:'#14141a', img:'img/e46142ef.webp' },
+  { key:'face4', face:true, name:'深林', em:'', price:1000, c1:'#3a3a44', c2:'#14141a', img:'img/e3316325.webp' },
+  { key:'face5', face:true, name:'青苔', em:'', price:900, c1:'#3a3a44', c2:'#14141a', img:'img/59bfa3f4.webp' },
+  { key:'face6', face:true, name:'晚风', em:'', price:800, c1:'#3a3a44', c2:'#14141a', img:'img/6a6131d0.webp' },
+  { key:'face7', face:true, name:'长夜', em:'', price:0, free:true, c1:'#3a3a44', c2:'#14141a', img:'img/49f3efe7.webp' },
+  { key:'face8', face:true, name:'线稿', em:'', price:700, c1:'#3a3a44', c2:'#14141a', img:'img/465e5412.webp' }
 ];
 
 const MY_AVATARS = [
