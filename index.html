@@ -3542,7 +3542,7 @@ function photoTiles(who){
 }
 function visitorAvHTML(){
   const vs = ['xin','qing','meng'];
-  return '<span class="ga">'+vs.map(k=>'<span class="visav" onclick="openFeedProfile(\''+k+'\')">'+avHTML(k,'',false,22)+'</span>').join('')+'</span>';
+  return '<span class="ga">'+vs.map(k=>'<span class="visav" onclick="openVisitorSpace(\''+k+'\')">'+avHTML(k,'',false,22)+'</span>').join('')+'</span>';
 }
 function visitorNames(){
   return ['周信之','沈清漪','周萌萌'].join('、');
@@ -4278,6 +4278,15 @@ function openRowAvatar(th){
   if(th === 'team'){ openChat('team'); return; }
   if(!CHARS[th]) return;
   S.view = { name:'profile', who: th, ret:{ name:'chats' } };
+  render();
+}
+function openVisitorSpace(who){
+  if(!CHARS[who]) return;
+  const cur = S.view || {};
+  let ret = { name:'feed' };
+  if(cur.name === 'space') ret = { name:'space', who:cur.who, from:cur.from, ret:cur.ret || { name:'feed' } };
+  else if(cur.name === 'profile') ret = { name:'profile', who:cur.who, ret:cur.ret || null };
+  S.view = { name:'space', who: who, from:'feed', ret: ret };
   render();
 }
 function openFeedProfile(who){
