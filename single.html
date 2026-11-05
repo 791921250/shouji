@@ -4488,7 +4488,8 @@ function maskQQ(q){
   if(q.length <= 6) return q.slice(0, 2) + '****';
   return q.slice(0, 4) + '****' + q.slice(-2);
 }
-function openDrawer(){ $('drawer').classList.add('on'); }
+let drawerOpenedAt = 0;
+function openDrawer(){ $('drawer').classList.add('on'); drawerOpenedAt = Date.now(); }
 function closeDrawer(){ $('drawer').classList.remove('on'); }
 /* 档案悬浮球：可拖动 + 位置记忆 */
 let fabSuppress = false;
@@ -4631,7 +4632,7 @@ function bootInit(){
   $('fab').onclick = () => { if(fabSuppress) return; openDrawer(); };
   initFabDrag();
   $('drawerClose').onclick = closeDrawer;
-  $('drawer').onclick = e => { if(e.target === $('drawer')) closeDrawer(); };
+  $('drawer').onclick = e => { if(e.target === $('drawer') && Date.now() - drawerOpenedAt > 400) closeDrawer(); };
   const splash = $('splash');
   if(splash){
     setTimeout(() => {
