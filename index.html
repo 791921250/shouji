@@ -73,13 +73,36 @@ button{background:none;border:0;cursor:pointer;font-size:inherit}
 .boot.off{display:none}
 .boot-in{position:relative;z-index:1;width:min(760px,100%);margin:auto 0}
 .boot-kicker{display:flex;align-items:center;gap:10px;font-size:10px;letter-spacing:.4em;color:#7d7d86}
-.boot-kicker{margin-bottom:13px}
-.boot-kicker .endprev{margin-left:auto;display:flex;align-items:center;gap:7px;font-size:10px;letter-spacing:.06em;color:#8a8a94;white-space:nowrap;overflow:hidden}
+.boot-kicker{margin-bottom:13px;flex-wrap:wrap;row-gap:8px}
+.boot-kicker .endprev{
+  margin-left:auto;display:flex;align-items:center;gap:7px;padding:5px 10px;border-radius:9px;
+  border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.05);
+  font-size:10px;letter-spacing:.06em;color:#8a8a94;white-space:nowrap;
+  cursor:pointer;transition:.16s;flex:0 0 auto;
+}
+.boot-kicker .endprev:hover{border-color:rgba(240,201,135,.5);background:rgba(240,201,135,.1)}
+.boot-kicker .endprev:active{transform:scale(.96)}
 .boot-kicker .endprev b{font-weight:500;color:#b08a4e;letter-spacing:.12em}
 .boot-kicker .endprev em{font-style:normal;color:#d8d8de;font-size:10px}
-.boot-kicker .endprev span{color:#7f7f89;overflow:hidden;text-overflow:ellipsis}
+.boot-kicker .endprev span{color:#7f7f89;overflow:hidden;text-overflow:ellipsis;max-width:42vw}
 .boot-kicker .endprev span.none{color:#5c5c66}
-@media(max-width:640px){.boot-kicker .endprev span{display:none}}
+@media(max-width:640px){
+  .boot-kicker{flex-wrap:wrap}
+  .boot-kicker>span{flex:1 1 auto;min-width:0}
+  .boot-kicker .endprev span{display:none}
+}
+.endcard{width:min(460px,100%)}
+.endlist{padding:6px 14px 14px}
+.endrow{display:flex;align-items:center;gap:11px;padding:10px 2px;border-bottom:1px solid rgba(120,95,45,.1)}
+.endrow:last-child{border-bottom:0}
+.endrow .eno{flex:0 0 22px;font-size:10px;letter-spacing:.1em;color:#b08a4e}
+.endrow .et{flex:1;min-width:0}
+.endrow .et b{display:block;font-size:12.5px;font-weight:600;color:#2c261b}
+.endrow .et b.unk{color:#b8ad97;font-weight:400;letter-spacing:.18em}
+.endrow .et s{display:block;font-size:10px;color:#8a7f6b;text-decoration:none;margin-top:2px}
+.endrow .est{flex:0 0 auto;font-size:10px;color:#a89d88}
+.endrow.on .est{color:#b07a21}
+.endcount{font-size:10px;color:#a97c31;letter-spacing:.08em}
 .boot-logo{display:flex;align-items:center;gap:11px;margin-bottom:clamp(22px,4vh,38px)}
 .boot-logo .q{
   width:34px;height:34px;border-radius:50%;display:grid;place-items:center;
@@ -1142,7 +1165,8 @@ body::after{opacity:.02}
 }
 .boot-logo .q{background:linear-gradient(145deg,#efc778,#c58a2e);box-shadow:0 6px 20px rgba(197,138,46,.3);color:#fff}
 .boot-kicker{margin-bottom:13px;color:#8a7f6b}
-.boot-kicker .endprev{color:#8a7f6b}
+.boot-kicker .endprev{color:#8a7f6b;border-color:rgba(120,95,45,.28);background:rgba(197,138,46,.09)}
+.boot-kicker .endprev:hover{border-color:rgba(197,138,46,.55);background:rgba(197,138,46,.16)}
 .boot-kicker .endprev b{color:#a97c31}
 .boot-kicker .endprev em{color:#3a3122}
 .boot-kicker .endprev span{color:#8a7f6b}
@@ -1199,7 +1223,13 @@ body::after{opacity:.02}
 <!-- ============ 开场 ============ -->
 <div class="boot" id="boot">
   <div class="boot-in">
-    <div class="boot-kicker"><i></i><span>LOST PHONE / CHAT FICTION</span><div class="endprev" id="endPrev"></div></div>
+    <div class="boot-kicker"><i></i><span>LOST PHONE / CHAT FICTION</span><button type="button" class="endprev" id="endPrev"></button></div>
+    <div class="howmask" id="endMask" hidden>
+      <div class="howcard endcard">
+        <div class="howhd"><b>结局收集</b><span class="endcount" id="endCount">0/8</span><button id="endClose" aria-label="关闭">✕</button></div>
+        <div class="endlist" id="endBody"></div>
+      </div>
+    </div>
     <div class="boot-logo">
       <div class="q">Q</div>
       <div><b>长夜聊天体 · 第七夜</b><s>SEVEN NIGHTS · EIGHT ENDINGS</s></div>
@@ -1576,7 +1606,7 @@ const SLOTS = [
       T('xin','禹哥你不是说要闭关？','08:14'),
       T('yu','闭完了。','08:15'),
       N('你看着屏幕，突然觉得这件事有点好笑——四个人，居然在同一座城。'),
-      T('meng','晚晚姐必须来！','08:16'),
+      T('meng','姐必须来！','08:16'),
       C([
         { label:'我去', fx:{ heart:2, yu:1, xin:1, qing:1, meng:1 }, reply:'我去。',
           then:[ T('meng','好耶！','08:19'), T('qing','地址我发群里。','08:20'), T('xin','我订位子。','08:21'), T('yu','……我带伞。','08:22') ] },
@@ -1640,8 +1670,8 @@ const SLOTS = [
   scenes:[
     { th:'meng', steps:[
       DIV('08:40','周四 · 早'),
-      SYS('周萌萌 请求添加你为好友 · 附言：晚晚姐我是信之他妹！','08:01'),
-      T('meng','晚晚姐！！','08:02'),
+      SYS('周萌萌 请求添加你为好友 · 附言：姐我是信之他妹！','08:01'),
+      T('meng','姐！！','08:02'),
       T('meng','我哥是不是在追你','08:02'),
       T('meng','他最近天天抱着手机笑，还问我女生喜欢什么礼物','08:03'),
       T('meng','我从来没见他这样','08:03'),
@@ -1655,7 +1685,7 @@ const SLOTS = [
         { label:'别乱说，我们没什么', fx:{ heart:1, meng:1 }, reply:'别乱说，我们没什么。',
           then:[ T('meng','哦。','08:08'), T('meng','那你为什么没退他好友。','08:09') ] }
       ]),
-      T('meng','晚晚姐，我哥这人什么都抢。','08:14'),
+      T('meng','姐，我哥这人什么都抢。','08:14'),
       T('meng','但他这次好像……真的陷进去了。','08:15'),
       T('meng','你别被我哥骗了。也别被我哥伤到。','08:15')
     ]}
@@ -1668,7 +1698,7 @@ const SLOTS = [
       DIV('14:20','周四 · 午'),
       IMG('xin','a-cat','墨点今天不吃饭。想你想的。','14:06'),
       N('你把这张照片和手机锁屏并排放。同一只猫。同一个缺了角的左耳。'),
-      T('xin','晚晚。','14:08'),
+      T('xin','我想跟你说清楚。','14:08'),
       T('xin','有些事我不是故意骗你。','14:08'),
       T('xin','我只是想有个理由，站在你面前。','14:09'),
       C([
@@ -1738,7 +1768,7 @@ const SLOTS = [
       DIV('15:02','周六 · 咖啡店'),
       N('周六下午，咖啡店。窗外有雨。你推门进去的时候，两个人已经在了。'),
       N('周信之坐在靠门的位置，沈禹在最里面的角落，面前一杯没动过的美式。'),
-      T('xin','晚晚，这边。','15:03'),
+      T('xin','这边。','15:03'),
       T('yu','……','15:03'),
       N('他们中间隔着一把空椅子。像谁故意留的。'),
       T('xin','手机带了吗。','15:05'),
@@ -1836,7 +1866,7 @@ const SLOTS = [
       T('meng','我哥今天没去健身房。','13:52'),
       T('meng','他把自己关在房间里，说输了。','13:52'),
       T('meng','我哥以前不这样。他什么都抢，但从来不认真。','13:53'),
-      T('meng','晚晚姐。你别因为我哥对你好就心软。','13:54'),
+      T('meng','姐。你别因为我哥对你好就心软。','13:54'),
       T('meng','他连猫都骗你。','13:54'),
       C([
         { label:'谢谢你告诉我', fx:{ meng:3, truth:1 }, reply:'谢谢你告诉我这些。',
@@ -1903,7 +1933,7 @@ const SLOTS = [
       T('xin','手机呢。','09:03'),
       T('yu','手机呢。','09:03'),
       N('群里安静下来。三个人都在等你开口。'),
-      T('qing','@晚 你说。','09:05'),
+      T('qing','@{name} 你说。','09:05'),
       C([
         { label:'还给沈禹', fx:{ yu:3, truth:1 }, reply:'还给沈禹。',
           then:[ T('xin','行。','09:09'), T('yu','谢谢。','09:09'), T('qing','那就这样。','09:10') ] },
@@ -2024,7 +2054,7 @@ const AMBIENT = {
   13:[
     {th:'man',who:'man',body:'你今天脸色不好。回来泡个脚，水我给你烧上。',tm:'17:10'},
     {th:'qing',who:'qing',body:'证据别落在对方手里。谁的证据都一样。',tm:'17:40'},
-    {th:'meng',who:'meng',body:'晚晚姐！我哥今天怪怪的，你帮我看看他是不是病了！',tm:'18:20'}
+    {th:'meng',who:'meng',body:'姐！我哥今天怪怪的，你帮我看看他是不是病了！',tm:'18:20'}
   ],
   14:[
     {th:'mama',who:'mama',body:'想吃什么？妈给你寄。别客气，客气我生气。',tm:'21:50'},
@@ -2330,7 +2360,7 @@ const SEEN_ALT = {
     body:`第九天，周萌萌在群里发了一条动态，又秒删。
 截图里是那部手机的界面。
 
-“晚晚姐，我不是故意的。”她私聊你，语气第一次不像她。
+“姐，我不是故意的。”她私聊你，语气第一次不像她。
 “我哥问我，我就说了。”
 
 当天下午，手机被远程锁定。
@@ -2826,6 +2856,22 @@ function renderEndPrev(){
   el.innerHTML = '<b>已达成结局</b><em>'+got.length+'/'+all.length+'</em>'
     + (names.length ? '<span>'+names.map(esc).join(' · ')+'</span>' : '<span class="none">还没有打出结局</span>');
 }
+function renderEndList(){
+  const got = unlockedEndings();
+  const all = Object.keys(ENDINGS);
+  const body = $('endBody'); if(!body) return;
+  $('endCount').textContent = got.length + '/' + all.length;
+  body.innerHTML = all.map(function(k,i){
+    const on = got.indexOf(k) >= 0;
+    return '<div class="endrow'+(on?' on':'')+'">'
+      + '<span class="eno">'+String(i+1).padStart(2,'0')+'</span>'
+      + '<div class="et"><b'+(on?'':' class="unk"')+'>'+(on?esc(ENDINGS[k].title):'？？？')+'</b>'
+      + '<s>'+esc(ENDINGS[k].sub)+'</s></div>'
+      + '<span class="est">'+(on?'已达成':'未达成')+'</span></div>';
+  }).join('');
+}
+function openEndList(){ renderEndList(); $('endMask').hidden = false; }
+function closeEndList(){ $('endMask').hidden = true; }
 function finishGame(){
   if(!S || S.finished) return;
   S.finished = true;
@@ -4469,6 +4515,9 @@ function bootInit(){
   $('profHint').textContent = PROFS[pickIdx].name;
   if(hasSave()){ $('loadBtn').hidden = false; }
   renderEndPrev();
+  $('endPrev').onclick = openEndList;
+  $('endClose').onclick = closeEndList;
+  $('endMask').onclick = e => { if(e.target.id === 'endMask') closeEndList(); };
   $('startBtn').onclick = startGame;
   $('loadBtn').onclick = loadGame;
   $('howBtn').onclick = () => { $('howMask').hidden = false; };

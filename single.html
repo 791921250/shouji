@@ -73,13 +73,36 @@ button{background:none;border:0;cursor:pointer;font-size:inherit}
 .boot.off{display:none}
 .boot-in{position:relative;z-index:1;width:min(760px,100%);margin:auto 0}
 .boot-kicker{display:flex;align-items:center;gap:10px;font-size:10px;letter-spacing:.4em;color:#7d7d86}
-.boot-kicker{margin-bottom:13px}
-.boot-kicker .endprev{margin-left:auto;display:flex;align-items:center;gap:7px;font-size:10px;letter-spacing:.06em;color:#8a8a94;white-space:nowrap;overflow:hidden}
+.boot-kicker{margin-bottom:13px;flex-wrap:wrap;row-gap:8px}
+.boot-kicker .endprev{
+  margin-left:auto;display:flex;align-items:center;gap:7px;padding:5px 10px;border-radius:9px;
+  border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.05);
+  font-size:10px;letter-spacing:.06em;color:#8a8a94;white-space:nowrap;
+  cursor:pointer;transition:.16s;flex:0 0 auto;
+}
+.boot-kicker .endprev:hover{border-color:rgba(240,201,135,.5);background:rgba(240,201,135,.1)}
+.boot-kicker .endprev:active{transform:scale(.96)}
 .boot-kicker .endprev b{font-weight:500;color:#b08a4e;letter-spacing:.12em}
 .boot-kicker .endprev em{font-style:normal;color:#d8d8de;font-size:10px}
-.boot-kicker .endprev span{color:#7f7f89;overflow:hidden;text-overflow:ellipsis}
+.boot-kicker .endprev span{color:#7f7f89;overflow:hidden;text-overflow:ellipsis;max-width:42vw}
 .boot-kicker .endprev span.none{color:#5c5c66}
-@media(max-width:640px){.boot-kicker .endprev span{display:none}}
+@media(max-width:640px){
+  .boot-kicker{flex-wrap:wrap}
+  .boot-kicker>span{flex:1 1 auto;min-width:0}
+  .boot-kicker .endprev span{display:none}
+}
+.endcard{width:min(460px,100%)}
+.endlist{padding:6px 14px 14px}
+.endrow{display:flex;align-items:center;gap:11px;padding:10px 2px;border-bottom:1px solid rgba(120,95,45,.1)}
+.endrow:last-child{border-bottom:0}
+.endrow .eno{flex:0 0 22px;font-size:10px;letter-spacing:.1em;color:#b08a4e}
+.endrow .et{flex:1;min-width:0}
+.endrow .et b{display:block;font-size:12.5px;font-weight:600;color:#2c261b}
+.endrow .et b.unk{color:#b8ad97;font-weight:400;letter-spacing:.18em}
+.endrow .et s{display:block;font-size:10px;color:#8a7f6b;text-decoration:none;margin-top:2px}
+.endrow .est{flex:0 0 auto;font-size:10px;color:#a89d88}
+.endrow.on .est{color:#b07a21}
+.endcount{font-size:10px;color:#a97c31;letter-spacing:.08em}
 .boot-logo{display:flex;align-items:center;gap:11px;margin-bottom:clamp(22px,4vh,38px)}
 .boot-logo .q{
   width:34px;height:34px;border-radius:50%;display:grid;place-items:center;
@@ -1165,7 +1188,8 @@ body::after{opacity:.02}
 }
 .boot-logo .q{background:linear-gradient(145deg,#efc778,#c58a2e);box-shadow:0 6px 20px rgba(197,138,46,.3);color:#fff}
 .boot-kicker{margin-bottom:13px;color:#8a7f6b}
-.boot-kicker .endprev{color:#8a7f6b}
+.boot-kicker .endprev{color:#8a7f6b;border-color:rgba(120,95,45,.28);background:rgba(197,138,46,.09)}
+.boot-kicker .endprev:hover{border-color:rgba(197,138,46,.55);background:rgba(197,138,46,.16)}
 .boot-kicker .endprev b{color:#a97c31}
 .boot-kicker .endprev em{color:#3a3122}
 .boot-kicker .endprev span{color:#8a7f6b}
@@ -1222,7 +1246,13 @@ body::after{opacity:.02}
 <!-- ============ 开场 ============ -->
 <div class="boot" id="boot">
   <div class="boot-in">
-    <div class="boot-kicker"><i></i><span>LOST PHONE / CHAT FICTION</span><div class="endprev" id="endPrev"></div></div>
+    <div class="boot-kicker"><i></i><span>LOST PHONE / CHAT FICTION</span><button type="button" class="endprev" id="endPrev"></button></div>
+    <div class="howmask" id="endMask" hidden>
+      <div class="howcard endcard">
+        <div class="howhd"><b>结局收集</b><span class="endcount" id="endCount">0/8</span><button id="endClose" aria-label="关闭">✕</button></div>
+        <div class="endlist" id="endBody"></div>
+      </div>
+    </div>
     <div class="boot-logo">
       <div class="q">Q</div>
       <div><b>长夜聊天体 · 第七夜</b><s>SEVEN NIGHTS · EIGHT ENDINGS</s></div>
@@ -1931,7 +1961,7 @@ const SLOTS = [
       T('xin','手机呢。','09:03'),
       T('yu','手机呢。','09:03'),
       N('群里安静下来。三个人都在等你开口。'),
-      T('qing','@晚 你说。','09:05'),
+      T('qing','@{name} 你说。','09:05'),
       C([
         { label:'还给沈禹', fx:{ yu:3, truth:1 }, reply:'还给沈禹。',
           then:[ T('xin','行。','09:09'), T('yu','谢谢。','09:09'), T('qing','那就这样。','09:10') ] },
@@ -2358,7 +2388,7 @@ const SEEN_ALT = {
     body:`第九天，周萌萌在群里发了一条动态，又秒删。
 截图里是那部手机的界面。
 
-“晚晚姐，我不是故意的。”她私聊你，语气第一次不像她。
+“姐，我不是故意的。”她私聊你，语气第一次不像她。
 “我哥问我，我就说了。”
 
 当天下午，手机被远程锁定。
@@ -2883,6 +2913,22 @@ function renderEndPrev(){
   el.innerHTML = '<b>已达成结局</b><em>'+got.length+'/'+all.length+'</em>'
     + (names.length ? '<span>'+names.map(esc).join(' · ')+'</span>' : '<span class="none">还没有打出结局</span>');
 }
+function renderEndList(){
+  const got = unlockedEndings();
+  const all = Object.keys(ENDINGS);
+  const body = $('endBody'); if(!body) return;
+  $('endCount').textContent = got.length + '/' + all.length;
+  body.innerHTML = all.map(function(k,i){
+    const on = got.indexOf(k) >= 0;
+    return '<div class="endrow'+(on?' on':'')+'">'
+      + '<span class="eno">'+String(i+1).padStart(2,'0')+'</span>'
+      + '<div class="et"><b'+(on?'':' class="unk"')+'>'+(on?esc(ENDINGS[k].title):'？？？')+'</b>'
+      + '<s>'+esc(ENDINGS[k].sub)+'</s></div>'
+      + '<span class="est">'+(on?'已达成':'未达成')+'</span></div>';
+  }).join('');
+}
+function openEndList(){ renderEndList(); $('endMask').hidden = false; }
+function closeEndList(){ $('endMask').hidden = true; }
 function finishGame(){
   if(!S || S.finished) return;
   S.finished = true;
@@ -4844,6 +4890,9 @@ function bootInit(){
   $('profHint').textContent = PROFS[pickIdx].name;
   if(hasSave()){ $('loadBtn').hidden = false; }
   renderEndPrev();
+  $('endPrev').onclick = openEndList;
+  $('endClose').onclick = closeEndList;
+  $('endMask').onclick = e => { if(e.target.id === 'endMask') closeEndList(); };
   $('startBtn').onclick = startGame;
   $('loadBtn').onclick = loadGame;
   $('howBtn').onclick = () => { $('howMask').hidden = false; };
