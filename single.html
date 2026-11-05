@@ -2698,7 +2698,7 @@ function doRest(){
   if(S.ap <= 0){ toast('行动力用完了'); return; }
   S.ap--;
   S.stats.risk = clamp(S.stats.risk - 1, 0, 20);
-  toast('你睡了一会儿。沈禹起疑的风险 -1');
+  toast('你睡了一会儿。起疑 -1');
   render(); save();
 }
 /* ---- 出门走走：1 行动力换一段线下时间 ---- */
@@ -4240,7 +4240,7 @@ function sheetHTML(){
       + (S.work && S.work.fired
         ? '<button onclick="workParttime()" '+(apOk?'':'disabled')+'><span class="em">🧾</span><span class="tt"><b>接兼职</b><s>被开除后的小活 · 稳赚不赔</s></span><span class="cost">-1</span></button>'
         : '<button onclick="doWork()" '+(apOk?'':'disabled')+'><span class="em">💼</span><span class="tt"><b>接一单</b><s>'+esc(S.prof.name)+'的私活</s></span><span class="cost">-1</span></button>')
-      + '<button onclick="doRest()" '+(apOk?'':'disabled')+'><span class="em">🌙</span><span class="tt"><b>睡一会儿</b><s>让沈禹少起一点疑心</s></span><span class="cost">-1</span></button>'
+      + '<button onclick="doRest()" '+(apOk?'':'disabled')+'><span class="em">🌙</span><span class="tt"><b>睡一会儿</b><s>让对方少起一点疑心</s></span><span class="cost">-1</span></button>'
       + '<button onclick="openShop()"><span class="em">🛍</span><span class="tt"><b>装扮商城</b><s>主题 / 头像 / 头像框</s></span><span class="cost">¥</span></button>'
       + '<button onclick="saveGame()"><span class="em">💾</span><span class="tt"><b>保存进度</b><s>存到这台设备</s></span><span class="cost">—</span></button>'
       + '</div>'
