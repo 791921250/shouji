@@ -288,6 +288,7 @@ button{background:none;border:0;cursor:pointer;font-size:inherit}
 .phead .who s{display:block;font-size:9.5px;color:var(--subT);text-decoration:none;margin-top:2px;letter-spacing:.04em}
 .phead .who s .od{display:inline-block;width:6px;height:6px;border-radius:50%;background:#32d74b;margin-right:4px;vertical-align:-1px}
 .phead .act{display:flex;align-items:center;gap:14px;color:var(--subT)}
+.phead .act button.arch{width:auto;min-width:44px;padding:0 10px;font-size:11px;letter-spacing:.06em;font-weight:600;color:var(--acc);background:var(--card);border:1px solid var(--ln);border-radius:16px}
 .phead .act button{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;transition:.15s}
 .phead .act button:hover{background:var(--card)}
 .phead .ic{width:19px;height:19px;opacity:.85}
@@ -3111,7 +3112,7 @@ function chatsHTML(){
   return '<div class="page">'
     + '<div class="phead"><div style="position:relative" onclick="go(\'me\')" title="我的背景页">'+avHTML('me','',false,32)+'</div>'
     +   '<div class="who" onclick="go(\'me\')" style="cursor:pointer"><b>'+fmt(S.name)+'</b><s><i class="od"></i>在线 · '+esc(S.prof.name)+'</s></div>'
-    +   '<div class="act"><button onclick="openSheet(\'actions\')">'+ICON.plus+'</button></div></div>'
+    +   '<div class="act"><button class="arch" onclick="openDrawer()">档案</button><button onclick="openSheet(\'actions\')">'+ICON.plus+'</button></div></div>'
     + (S.searchOpen
         ? '<div class="searchbar">'+ICON.search+'<input class="inp" id="chatSearch" autocomplete="off" placeholder="搜人物、聊天内容" value="'+esc(S.searchQ||'')+'" oninput="onChatSearch(this.value)"><span class="clr" onclick="closeChatSearch()">✕</span></div>'
         : '<div class="searchbar" onclick="openChatSearch()">'+ICON.search+'<span>搜索聊天记录 / 联系人</span></div>')
