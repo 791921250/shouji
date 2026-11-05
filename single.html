@@ -1393,7 +1393,7 @@ const SLOTS = [
       N('你在固定队群里发了一张照片。'),
       ME('有人丢手机吗？黑色，壳上贴着猫，在 T2 捡的。'),
       T('xin','我的。','08:52'),
-      T('xin','别动。我下午来拿。','08:52'),
+      T('xin','别动。我明天下午回来拿。','08:52'),
       T('yu','……','08:53'),
       T('yu','不是他的。','08:53'),
       T('xin','禹哥，你这就没意思了。','08:54'),
@@ -1417,12 +1417,22 @@ const SLOTS = [
   scenes:[
     { th:'xin', steps:[
       DIV('14:20','周一 · 午后'),
-      T('xin','落地了没？','14:12'),
-      T('xin','我明天下午的航班回来。手机先放你那儿，行不行。','14:13'),
-      T('xin','作为谢礼，请你吃饭。','14:13'),
+      { kind:'cond', test:function(){ return S.stats.xin >= 2; }, yes:[
+        T('xin','落地了没？','14:12'),
+        T('xin','我明天下午的航班回来。手机先放你那儿，行不行。','14:13'),
+        T('xin','作为谢礼，请你吃饭。','14:13')
+      ], no:[
+        T('xin','手机还在你那儿。','14:12'),
+        T('xin','我明天下午的航班回来。先别急着还给谁。','14:13'),
+        T('xin','等我回来，请你吃饭，当面把话说清楚。','14:13')
+      ] },
       IMG('xin','a-cat','我家墨点。左耳天生缺一角，脾气比我还差。','14:15'),
       N('照片里那只猫，和手机贴纸上的，是同一只。'),
-      T('xin','对了，别跟禹哥说。他这人，黏。','14:17'),
+      { kind:'cond', test:function(){ return S.stats.xin >= 2; }, yes:[
+        T('xin','对了，别跟禹哥说。他这人，黏。','14:17')
+      ], no:[
+        T('xin','禹哥那边，你爱说不说。','14:17')
+      ] },
       C([
         { label:'好啊，吃饭可以', fx:{ xin:2, heart:1 }, reply:'好啊。吃饭可以。',
           then:[ T('xin','那我订位子。','14:20'), N('你笑了一下。手机在桌上震，是另一条好友申请。') ] },
@@ -2692,7 +2702,8 @@ function startSlot(){
     }
     S.scripts[sc.th] = st;
     S.unread[sc.th] = (S.unread[sc.th] || 0) + 1;
-    const first = sc.steps.find(x => x.kind !== 'choice' && x.kind !== 'sys' && x.kind !== 'div');
+    let first = sc.steps.find(x => x.kind !== 'choice' && x.kind !== 'sys' && x.kind !== 'div');
+    if(first && first.kind === 'cond') first = first.yes[0];
     S.previews[sc.th] = first ? previewOf(first) : '有新消息';
   });
   (AMBIENT[idx] || []).forEach(a => {
@@ -2739,6 +2750,11 @@ async function runScript(th){
   while(st.i < st.steps.length){
     const step = st.steps[st.i];
     if(!step){ st.i++; continue; }
+    if(step.kind === 'cond'){
+      const branch = step.test() ? step.yes : step.no;
+      st.steps.splice(st.i, 1, ...branch);
+      continue;
+    }
     if(step.kind === 'choice'){
       st.waiting = true;
       st.running = false;
