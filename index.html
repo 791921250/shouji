@@ -931,6 +931,7 @@ button{background:none;border:0;cursor:pointer;font-size:inherit}
 .relcard .rm .n em{font-style:normal;font-size:8px;color:var(--subT);border:1px solid var(--ln);border-radius:4px;padding:0 4px}
 .relcard .rm .n span{margin-left:auto;font-size:9px;color:var(--subT)}
 .relcard .rm s{display:block;font-size:8.5px;color:var(--subT);text-decoration:none;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.relcard .rm s .relon{display:inline-block;width:5px;height:5px;border-radius:50%;background:#32d74b;box-shadow:0 0 6px rgba(50,215,75,.5);margin-right:5px;vertical-align:1px}
 .relcard .meter{margin-top:5px}
 .meter{height:3px;border-radius:3px;background:var(--card2);overflow:hidden}
 .meter i{display:block;height:100%;border-radius:3px;background:linear-gradient(90deg,#4f9dff,#0a84ff);transition:width .35s}
@@ -3920,7 +3921,7 @@ function endingHTML(){
     + '<div><span>周信之 · 撩</span><b>'+st.xin+'</b></div>'
     + '<div><span>心动</span><b>'+st.heart+'</b></div>'
     + '<div><span>真相</span><b>'+st.truth+'</b></div>'
-    + '<div><span>沈禹起疑</span><b>'+st.risk+'</b></div>'
+    + '<div><span>起疑</span><b>'+st.risk+'</b></div>'
     + '<div><span>电子零钱</span><b>'+money(S.money)+'</b></div>'
     + '</div>'
     + '<div class="eactions"><button class="pri" onclick="again()">再来一周</button><button onclick="exportSave()">导出存档</button></div>'
@@ -3936,9 +3937,9 @@ function relationCard(who){
   const c = CHARS[who];
   const v = Math.min(18, relVal(who));
   const label = { yu:'黏度', xin:'撩度', qing:'信任', meng:'好感' }[who];
-  return '<div class="relcard">'+avHTML(who,'',true,38)
+  return '<div class="relcard">'+avHTML(who,'',false,38)
     + '<div class="rm"><div class="n">'+esc(c.name)+'<em>'+esc(c.rel)+'</em><span>'+v+'</span></div>'
-    + '<s>'+esc(c.sig)+'</s><div class="meter '+(who==='yu'?'':who==='xin'?'rose':who==='qing'?'gold':'')+'"><i style="width:'+(v/18*100)+'%"></i></div></div></div>';
+    + '<s>'+(c.on?'<i class="relon"></i>':'')+esc(c.sig)+'</s><div class="meter '+(who==='yu'?'':who==='xin'?'rose':who==='qing'?'gold':'')+'"><i style="width:'+(v/18*100)+'%"></i></div></div></div>';
 }
 function sideBlockA(){
   return '<div class="panelT"><b>关系网</b><span>RELATIONS</span></div>'
@@ -3958,7 +3959,7 @@ function sideBlockB(){
   return '<div class="panelT" style="margin-top:16px"><b>行动力</b><span>AP</span></div><div class="apdots">'+dots+'<span>'+S.ap+' / 3</span></div>'
     + '<div class="statline"><span class="lb">心动</span><div class="meter rose"><i style="width:'+(st.heart/20*100)+'%"></i></div><span class="vv">'+st.heart+'</span></div>'
     + '<div class="statline"><span class="lb">真相</span><div class="meter gold"><i style="width:'+(st.truth/20*100)+'%"></i></div><span class="vv">'+st.truth+'</span></div>'
-    + '<div class="statline"><span class="lb">沈禹起疑</span><div class="meter red"><i style="width:'+(st.risk/20*100)+'%"></i></div><span class="vv">'+st.risk+'</span></div>'
+    + '<div class="statline"><span class="lb">起疑</span><div class="meter red"><i style="width:'+(st.risk/20*100)+'%"></i></div><span class="vv">'+st.risk+'</span></div>'
     + '<div class="panelT" style="margin-top:14px"><b>线索本</b><span>'+S.clues.length+' 条</span></div>'
     + clueList
     + '<div class="hintbox" style="margin-top:10px">'+hint+'</div>';
