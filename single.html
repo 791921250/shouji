@@ -73,7 +73,13 @@ button{background:none;border:0;cursor:pointer;font-size:inherit}
 .boot.off{display:none}
 .boot-in{position:relative;z-index:1;width:min(760px,100%);margin:auto 0}
 .boot-kicker{display:flex;align-items:center;gap:10px;font-size:10px;letter-spacing:.4em;color:#7d7d86}
-.boot-kicker i{display:block;width:30px;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.5))}
+.boot-kicker{margin-bottom:13px}
+.boot-kicker .endprev{margin-left:auto;display:flex;align-items:center;gap:7px;font-size:10px;letter-spacing:.06em;color:#8a8a94;white-space:nowrap;overflow:hidden}
+.boot-kicker .endprev b{font-weight:500;color:#b08a4e;letter-spacing:.12em}
+.boot-kicker .endprev em{font-style:normal;color:#d8d8de;font-size:10px}
+.boot-kicker .endprev span{color:#7f7f89;overflow:hidden;text-overflow:ellipsis}
+.boot-kicker .endprev span.none{color:#5c5c66}
+@media(max-width:640px){.boot-kicker .endprev span{display:none}}
 .boot-logo{display:flex;align-items:center;gap:11px;margin-bottom:clamp(22px,4vh,38px)}
 .boot-logo .q{
   width:34px;height:34px;border-radius:50%;display:grid;place-items:center;
@@ -1153,7 +1159,11 @@ body::after{opacity:.02}
 }
 .boot-logo .q{background:linear-gradient(145deg,#efc778,#c58a2e);box-shadow:0 6px 20px rgba(197,138,46,.3);color:#fff}
 .boot-kicker{margin-bottom:13px;color:#8a7f6b}
-.boot-kicker i{background:linear-gradient(90deg,transparent,rgba(120,95,45,.45))}
+.boot-kicker .endprev{color:#8a7f6b}
+.boot-kicker .endprev b{color:#a97c31}
+.boot-kicker .endprev em{color:#3a3122}
+.boot-kicker .endprev span{color:#8a7f6b}
+.boot-kicker .endprev span.none{color:#a89d88}
 .boot-logo b{color:#5b5344}
 .boot-logo s{color:#9a8f79}
 .boot h1{color:#2c261b}
@@ -1206,7 +1216,7 @@ body::after{opacity:.02}
 <!-- ============ 开场 ============ -->
 <div class="boot" id="boot">
   <div class="boot-in">
-    <div class="boot-kicker"><i></i><span>LOST PHONE / CHAT FICTION</span></div>
+    <div class="boot-kicker"><i></i><span>LOST PHONE / CHAT FICTION</span><div class="endprev" id="endPrev"></div></div>
     <div class="boot-logo">
       <div class="q">Q</div>
       <div><b>长夜聊天体 · 第七夜</b><s>SEVEN NIGHTS · EIGHT ENDINGS</s></div>
@@ -2845,10 +2855,33 @@ function calcEnding(){
   if(st.truth <= 4) return 'empty';
   return 'alone';
 }
+const ENDING_KEY = 'lostphone_endings_v1';
+function unlockedEndings(){
+  try{
+    const a = JSON.parse(localStorage.getItem(ENDING_KEY) || '[]');
+    return Array.isArray(a) ? a.filter(function(k){ return !!ENDINGS[k]; }) : [];
+  }catch(e){ return []; }
+}
+function recordEnding(id){
+  if(!id || !ENDINGS[id]) return;
+  try{
+    const a = unlockedEndings();
+    if(a.indexOf(id) < 0){ a.push(id); localStorage.setItem(ENDING_KEY, JSON.stringify(a)); }
+  }catch(e){}
+}
+function renderEndPrev(){
+  const el = $('endPrev'); if(!el) return;
+  const got = unlockedEndings();
+  const all = Object.keys(ENDINGS);
+  const names = all.filter(function(k){ return got.indexOf(k) >= 0; }).map(function(k){ return ENDINGS[k].title; });
+  el.innerHTML = '<b>已达成结局</b><em>'+got.length+'/'+all.length+'</em>'
+    + (names.length ? '<span>'+names.map(esc).join(' · ')+'</span>' : '<span class="none">还没有打出结局</span>');
+}
 function finishGame(){
   if(!S || S.finished) return;
   S.finished = true;
   S.ending = calcEnding();
+  recordEnding(S.ending);
   S.view = { name:'ending' };
   S.sheet = null;
   save(); render();
@@ -4795,6 +4828,7 @@ function bootInit(){
     + '</button>').join('');
   $('profHint').textContent = PROFS[pickIdx].name;
   if(hasSave()){ $('loadBtn').hidden = false; }
+  renderEndPrev();
   $('startBtn').onclick = startGame;
   $('loadBtn').onclick = loadGame;
   $('howBtn').onclick = () => { $('howMask').hidden = false; };
