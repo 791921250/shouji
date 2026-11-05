@@ -4148,7 +4148,7 @@ function initFabDrag(){
   el.addEventListener('pointermove', e => {
     if(!down) return;
     const dx = e.clientX - sx, dy = e.clientY - sy;
-    if(!moved && Math.abs(dx) + Math.abs(dy) > 6) moved = true;
+    if(!moved && Math.abs(dx) + Math.abs(dy) > 10) moved = true;
     if(moved){
       if(e.cancelable) e.preventDefault();
       setPos(bx + dx, by + dy);
@@ -4158,6 +4158,11 @@ function initFabDrag(){
     if(!down) return;
     down = false;
     el.classList.remove('dragging');
+    if(!moved){
+      fabSuppress = true;
+      openDrawer();
+      setTimeout(() => { fabSuppress = false; }, 320);
+    }
     if(moved){
       fabSuppress = true;
       setTimeout(() => { fabSuppress = false; }, 320);
