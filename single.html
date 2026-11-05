@@ -2642,6 +2642,11 @@ function openChat(th, ret){
   setTimeout(() => runScript(th), 60);
 }
 
+const LEAD_EXTRA = {
+  yu:['……你别嫌我烦。','我就是想问一句。','你今天忙不忙。','我没别的意思。','睡不着的话，可以找我。','你回我就好。','我是不是又话多了。'],
+  xin:['别急着回答。','我有的是时间。','你越这样，我越想听。','行，我记下了。','下次别一个人走。','你慢慢想，我不催。']
+};
+let LEAD_IDX = {};
 function selectOpt(i){
   if(!S.view || S.view.name !== 'chat') return;
   const th = S.view.th;
@@ -2654,6 +2659,16 @@ function selectOpt(i){
   st.waiting = false;
   st.i++;
   if(opt.then && opt.then.length) st.steps.splice(st.i, 0, ...opt.then);
+  if(opt.then && LEAD_EXTRA[th]){
+    const opp = opt.then.filter(s => s.who === th && (s.kind === 'text' || s.kind === 'voice'));
+    if(opp.length === 1 && (opp[0].body || '').length <= 10){
+      const pool = LEAD_EXTRA[th].filter(x => !opt.then.some(s => s.body === x));
+      if(pool.length){
+        const i = (LEAD_IDX[th] = ((LEAD_IDX[th] || 0) + 1) % pool.length);
+        st.steps.splice(st.i + opt.then.length, 0, { who: th, kind: 'text', body: pool[i], tm: PHASE_TM[S.phase] });
+      }
+    }
+  }
   if(opt.reply){
     if(/^（/.test(opt.reply)) pushMsg(th, { who:'narr', kind:'narr', body:opt.reply });
     else if(/^(qing|meng|man|mama)$/.test(th)) pushMsg(th, { who:'narr', kind:'narr', body:'你：'+opt.reply });
