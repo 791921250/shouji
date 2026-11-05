@@ -4379,7 +4379,7 @@ function render(){
   if(keepShop !== null){ const sp = document.querySelector('.shop'); if(sp) sp.scrollTop = keepShop; }
   $('ptab').innerHTML = tabHTML();
   $('ptab').style.display = (isPhoneView() || isSubView()) ? 'none' : 'grid';
-  $('fab').style.display = (isPhoneView() || isSubView()) ? 'none' : '';
+  $('fab').style.display = (!(window.innerWidth <= 1180) || S.view.name === 'ending' || S.view.name === 'work') ? 'none' : '';
   renderSides();
   setTimeout(() => {
     const cb = $('chatbody');
