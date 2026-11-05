@@ -539,6 +539,12 @@ button{background:none;border:0;cursor:pointer;font-size:inherit}
 .spvis .ga{display:flex;flex:0 0 auto}
 .spvis .ga .av{width:22px;height:22px;font-size:9px;margin-right:-8px;box-shadow:0 0 0 1.5px var(--card)}
 .spvis .ga .av:last-child{margin-right:0}
+.spvis .ga .visav{display:flex;flex:0 0 auto;margin-right:-8px;cursor:pointer;transition:transform .12s}
+.spvis .ga .visav:last-child{margin-right:0}
+.spvis .ga .visav:active{transform:scale(.92)}
+.spvis .ga .visav .av{margin-right:0}
+.fpost .cmt b.cmtname{cursor:pointer}
+.fpost .cmt b.cmtname:active{opacity:.7}
 .spvis .vt{flex:1;min-width:0}
 .spvis .vt b{display:block;font-size:10px;color:var(--txt);font-weight:500}
 .spvis .vt s{display:block;font-size:8.5px;color:var(--subT);text-decoration:none;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -3536,7 +3542,7 @@ function photoTiles(who){
 }
 function visitorAvHTML(){
   const vs = ['xin','qing','meng'];
-  return '<span class="ga">'+vs.map(k=>avHTML(k,'',false,22)).join('')+'</span>';
+  return '<span class="ga">'+vs.map(k=>'<span class="visav" onclick="openFeedProfile(\''+k+'\')">'+avHTML(k,'',false,22)+'</span>').join('')+'</span>';
 }
 function visitorNames(){
   return ['周信之','沈清漪','周萌萌'].join('、');
@@ -3563,7 +3569,7 @@ function feedPostHTML(f){
       : (f.img && ASSETS.posts[f.img]) ? '<div class="imgbox"><div class="art has-img" style="background-image:url(\''+ASSETS.posts[f.img]+'\');background-size:cover;background-position:center"></div></div>'
       : f.art ? '<div class="imgbox">'+artHTML(f.art)+'</div>' : '')
     + '<div class="fi"><span>👍 '+f.likes+'</span><span>💬 '+f.comments.length+'</span><span>'+ (read?'已浏览':'刚刚更新') +'</span></div>'
-    + '<div class="cmt">'+f.comments.map(([w,t])=>'<div><b>'+esc(CHARS[w]?CHARS[w].name:w)+'：</b>'+esc(t)+'</div>').join('')+'</div>'
+    + '<div class="cmt">'+f.comments.map(([w,t])=>'<div><b'+(CHARS[w]?' class="cmtname" onclick="openFeedProfile(\''+w+'\')"':'')+'>'+esc(CHARS[w]?CHARS[w].name:w)+'：</b>'+esc(t)+'</div>').join('')+'</div>'
     + (f.clue ? '<div class="clueflag">📌 你注意到了一处细节</div>' : '')
     + '</div>';
 }
