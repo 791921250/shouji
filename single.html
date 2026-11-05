@@ -113,6 +113,11 @@ button{background:none;border:0;cursor:pointer;font-size:inherit}
 .enddetail h2{font-family:var(--serif);font-size:19px;font-weight:600;color:#2c261b;margin:7px 0 4px;letter-spacing:.04em}
 .enddetail .edsub{font-size:10.5px;color:#8a7f6b;letter-spacing:.05em;margin-bottom:13px}
 .enddetail .edbody{font-size:12.5px;line-height:2.05;color:#4a4437;white-space:pre-wrap}
+.enddetail .edstatst{margin-top:16px;padding-top:12px;border-top:1px solid rgba(120,95,45,.16);font-size:10.5px;letter-spacing:.1em;color:#8a7f6b}
+.enddetail .edstats{display:grid;grid-template-columns:1fr 1fr;gap:0 14px;margin-top:4px}
+.enddetail .edstats div{display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:1px dashed rgba(120,95,45,.12);font-size:10.5px;color:#7c7260}
+.enddetail .edstats b{font-size:11.5px;font-weight:600;color:#b07a21}
+.enddetail .ednomsg{margin-top:14px;padding-top:12px;border-top:1px solid rgba(120,95,45,.16);font-size:10.5px;color:#a89d88;letter-spacing:.04em}
 .boot-logo{display:flex;align-items:center;gap:11px;margin-bottom:clamp(22px,4vh,38px)}
 .boot-logo .q{
   width:34px;height:34px;border-radius:50%;display:grid;place-items:center;
@@ -2911,26 +2916,35 @@ const ENDING_KEY = 'lostphone_endings_v1';
 function unlockedEndings(){
   try{
     const a = JSON.parse(localStorage.getItem(ENDING_KEY) || '[]');
-    return Array.isArray(a) ? a.filter(function(k){ return !!ENDINGS[k]; }) : [];
+    if(!Array.isArray(a)) return [];
+    return a.map(function(x){ return typeof x === 'string' ? { id:x } : x; })
+            .filter(function(x){ return x && ENDINGS[x.id]; });
   }catch(e){ return []; }
+}
+function endingIds(){
+  return unlockedEndings().map(function(x){ return x.id; });
 }
 function recordEnding(id){
   if(!id || !ENDINGS[id]) return;
   try{
     const a = unlockedEndings();
-    if(a.indexOf(id) < 0){ a.push(id); localStorage.setItem(ENDING_KEY, JSON.stringify(a)); }
+    if(!a.some(function(x){ return x.id === id; })){
+      a.push({ id:id, who:S.endingWho || null,
+        stats:Object.assign({}, S.stats || {}), money:S.money });
+      localStorage.setItem(ENDING_KEY, JSON.stringify(a));
+    }
   }catch(e){}
 }
 function renderEndPrev(){
   const el = $('endPrev'); if(!el) return;
-  const got = unlockedEndings();
+  const got = endingIds();
   const all = Object.keys(ENDINGS);
   const names = all.filter(function(k){ return got.indexOf(k) >= 0; }).map(function(k){ return ENDINGS[k].title; });
   el.innerHTML = '<b>已达成结局</b><em>'+got.length+'/'+all.length+'</em>'
     + (names.length ? '<span>'+names.map(esc).join(' · ')+'</span>' : '<span class="none">还没有打出结局</span>');
 }
 function renderEndList(){
-  const got = unlockedEndings();
+  const got = endingIds();
   const all = Object.keys(ENDINGS);
   const body = $('endBody'); if(!body) return;
   $('endCount').textContent = got.length + '/' + all.length;
@@ -2947,11 +2961,23 @@ function openEndList(){ renderEndList(); $('endMask').hidden = false; }
 function closeEndList(){ $('endMask').hidden = true; }
 function openEndDetail(k){
   const e = ENDINGS[k]; if(!e) return;
+  const rec = unlockedEndings().filter(function(x){ return x.id === k; })[0] || null;
+  const st = rec && rec.stats;
+  const cells = st ? [
+    ['沈禹 · 黏','yu'],['周信之 · 撩','xin'],['沈清漪 · 信任','qing'],['周萌萌 · 好感','meng'],
+    ['心动','heart'],['真相','truth'],['起疑','risk']
+  ].map(function(c){
+    return '<div><span>'+c[0]+'</span><b>'+(st[c[1]] == null ? 0 : st[c[1]])+'</b></div>';
+  }).join('') + '<div><span>电子零钱</span><b>'+money(rec.money || 0)+'</b></div>'
+    : '';
   $('endDetailBody').innerHTML = '<div class="enddetail">'
     + '<div class="edk">'+esc(e.k)+'</div>'
     + '<h2>'+esc(e.title)+'</h2>'
     + '<div class="edsub">'+esc(e.sub)+'</div>'
-    + '<div class="edbody">'+fmtB(e.body)+'</div></div>';
+    + '<div class="edbody">'+fmtB(e.body)+'</div>'
+    + (st ? '<div class="edstatst">结局达成时的数据</div><div class="edstats">'+cells+'</div>'
+          : '<div class="ednomsg">早期记录，没有保存这一局的数据。</div>')
+    + '</div>';
   $('endDetailMask').hidden = false;
 }
 function closeEndDetail(){ $('endDetailMask').hidden = true; }
