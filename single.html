@@ -2656,6 +2656,7 @@ function selectOpt(i){
   if(opt.then && opt.then.length) st.steps.splice(st.i, 0, ...opt.then);
   if(opt.reply){
     if(/^（/.test(opt.reply)) pushMsg(th, { who:'narr', kind:'narr', body:opt.reply });
+    else if(/^(qing|meng|man|mama)$/.test(th)) pushMsg(th, { who:'narr', kind:'narr', body:'你：'+opt.reply });
     else pushMsg(th, { who:'me', kind:'text', body:opt.reply, tm:PHASE_TM[S.phase] });
   }
   S.unread[th] = 0;
