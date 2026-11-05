@@ -2240,6 +2240,12 @@ const ENDINGS = {
     body:`你把手机还给了失物招领处。\n\n填表的时候，机主那一栏空着。\n你确实不知道他是谁。\n\n三天后，你收到一条陌生号码的短信：\n“谢谢。手机找到了。”\n\n你回了一句“不客气”。\n那边没有再说话。\n\n《长夜》停服公告出来那天，\n你翻遍了列表，也没找到一个叫沈禹的人。\n你甚至不确定，自己有没有通过他的好友。\n\nT2 的第三排靠窗换了新的椅子。\n你在那儿坐下，摸了摸口袋——空的。\n\n广播在报航班。\n你忽然想不起来，自己那天到底在等谁。` }
 };
 
+const SEEN_ALT = {
+  xin:`第九天，周信之约你在咖啡馆见面。\n他没笑，把手机推到你面前。\n\n“这部手机，你看过。”\n\n不是问句。\n\n你打了很多字，又删掉。最后只回了一个“是”。\n\n他看了很久，然后起身，把椅子推回去。\n“我可以接受你不选我。”他说，“但我不能接受，你把我当傻子。”\n\n当天晚上，你发现那部手机被远程锁定了。\n壁纸变成纯黑，中间一行小字：\n\n“赢一次可以。骗我，不行。”\n\n再后来，好友列表里少了一个人。\n头像灰了，签名空了。`,
+  qing:`第九天，沈清漪给你发来一份文件。\n标题是《手机交接协议》，落款处已经签好她的名字。\n\n“我看过你的操作记录。”她在电话里说，声音很平。\n“不是他告诉我的。是我查的。”\n\n你沉默。她说得比任何质问都清楚。\n\n“我可以当作没看见。”她说，“但你要答应我一件事——以后别再用这种方式，去靠近一个人。”\n\n那部手机最后被锁了。\n锁屏上只有一行字：\n\n“信任条款第九条：不可撤销。”\n\n再后来，你给她发消息，只显示送达，没有已读。`,
+  meng:`第九天，周萌萌在群里发了一条动态，又秒删。\n截图里是那部手机的界面。\n\n“晚晚姐，我不是故意的。”她私聊你，语气第一次不像她。\n“我哥问我，我就说了。”\n\n当天下午，手机被远程锁定。\n壁纸黑了，只剩一行字：\n\n“我把你当自己人。”\n\n后来群里安静了很久。\n她还是会给你发奶茶店的新品，但不再问你要不要一起。\n你们之间，多了一条谁都没提过的界线。`
+};
+
 /* =========================================================
    引擎
    ========================================================= */
@@ -2420,7 +2426,7 @@ function newState(name, profKey){
     prof: { key:p.key, name:p.name, income:p.income, early:!!p.early, note:p.note, sleep:p.sleep, icon:p.icon },
     day:1, phase:0, ap:3, slotLoaded:false,
     money:p.money,
-    stats:{ yu:0, xin:0, qing:0, meng:0, heart:0, truth:0, risk:0 },
+    stats:{ yu:0, xin:0, qing:0, meng:0, heart:0, truth:0, risk:0, susp:{yu:0,xin:0,qing:0,meng:0} },
     clues:[], flags:{}, likedPosts:[], randSeen:[],
     chats:{ team:[], yu:[], xin:[], qing:[], meng:[], man:[], mama:[] },
     unread:{ team:0, yu:0, xin:0, qing:0, meng:0, man:0, mama:0 },
@@ -2492,13 +2498,43 @@ function chatLastTime(th){
 }
 
 /* ---------------- 数值 ---------------- */
-function applyFx(fx){
+const SUSP_KEYS = ['yu','xin','qing','meng'];
+function ensureSusp(){
+  if(!S.stats.susp) S.stats.susp = { yu:(S.stats.risk||0), xin:0, qing:0, meng:0 };
+  const s = S.stats.susp;
+  SUSP_KEYS.forEach(k => { s[k] = s[k] || 0; });
+  return s;
+}
+function suspTop(){
+  const s = ensureSusp();
+  let who = 'yu', v = s.yu;
+  SUSP_KEYS.forEach(k => { if(s[k] > v){ v = s[k]; who = k; } });
+  return { who: who, v: v };
+}
+function syncRisk(){
+  const t = suspTop();
+  S.stats.risk = t.v;
+  return t;
+}
+function addSusp(n, who){
+  const s = ensureSusp();
+  let w = who;
+  if(!w || !s.hasOwnProperty(w)){
+    const list = SUSP_KEYS.filter(k => S.unlocked.includes(k));
+    const arr = list.length ? list : SUSP_KEYS;
+    w = arr[Math.floor(Math.random()*arr.length)];
+  }
+  s[w] = Math.max(0, Math.min(10, s[w] + n));
+  syncRisk();
+}
+function applyFx(fx, srcWho){
   if(!fx) return;
   Object.keys(fx).forEach(k => {
     const v = fx[k];
     if(k === 'money'){ S.money += v; toast('电子零钱 ' + (v>0?'+':'') + v); }
     else if(k === 'clue'){ gainClue(v); }
     else if(k === 'flag'){ S.flags[v] = 1; }
+    else if(k === 'risk'){ addSusp(v, srcWho); }
     else if(S.stats[k] !== undefined){ S.stats[k] = clamp(S.stats[k] + v, 0, 20); }
   });
 }
@@ -2676,7 +2712,7 @@ function selectOpt(i){
     else pushMsg(th, { who:'me', kind:'text', body:opt.reply, tm:PHASE_TM[S.phase] });
   }
   S.unread[th] = 0;
-  applyFx(opt.fx);
+  applyFx(opt.fx, th);
   render(); save();
   setTimeout(() => runScript(th), 260);
 }
@@ -2684,7 +2720,8 @@ function selectOpt(i){
 /* ---------------- 结局 ---------------- */
 function calcEnding(){
   const st = S.stats;
-  if(st.risk >= 10) return 'be_seen';
+  const _top = syncRisk();
+  if(_top.v >= 10){ S.endingWho = _top.who; return 'be_seen'; }
   if(st.yu >= 16 && st.xin >= 15) return 'three';
   if(st.yu >= 14) return 'yu';
   if(st.xin >= 14) return 'xin';
@@ -2714,17 +2751,17 @@ function doWork(){
 function doRest(){
   if(S.ap <= 0){ toast('行动力用完了'); return; }
   S.ap--;
-  S.stats.risk = clamp(S.stats.risk - 1, 0, 20);
+  const _st = suspTop(); addSusp(-1, _st.who);
   toast('你睡了一会儿。起疑 -1');
   render(); save();
 }
 /* ---- 出门走走：1 行动力换一段线下时间 ---- */
 const VISITS = [
   { who:'man',  em:'🏪', label:'去便利店帮工',   sub:'田小满 · 理货赚零花',           fx:()=>{ const g = 80 + Math.floor(Math.random()*61); S.money += g; return '帮工完成 · 电子零钱 +'+money(g); } },
-  { who:'yu',   em:'🐾', label:'去便利店找沈禹', sub:'多待一会儿 · 他会更在意你，也会更多看你', fx:()=>{ applyFx({ yu:1, risk:1 }); return '沈禹 好感 +1 · 沈禹起疑 +1'; } },
-  { who:'xin',  em:'🕶', label:'跟踪周信之',     sub:'赌一把 · 可能查到东西，也可能暴露', fx:()=>{ applyFx({ truth:1, risk:1 }); return '真相 +1 · 沈禹起疑 +1'; } },
+  { who:'yu',   em:'🐾', label:'去便利店找沈禹', sub:'多待一会儿 · 只是陪他值一会儿班', fx:()=>{ applyFx({ yu:1, heart:1 }); return '沈禹 好感 +1 · 心动 +1'; } },
+  { who:'xin',  em:'🕶', label:'跟踪周信之',     sub:'赌一把 · 可能查到东西，也可能暴露', fx:()=>{ applyFx({ truth:1, risk:1 }, 'xin'); return '真相 +1 · 周信之起疑 +1'; } },
   { who:'qing', em:'☕', label:'约沈清漪喝咖啡', sub:'她知道的比说出来的多',         fx:()=>{ applyFx({ qing:1, heart:1 }); return '沈清漪 好感 +1 · 好感 +1'; } },
-  { who:'meng', em:'🧋', label:'陪周萌萌探店',   sub:'她顺便帮你打掩护',             fx:()=>{ applyFx({ meng:1, risk:-1 }); return '周萌萌 好感 +1 · 沈禹起疑 -1'; } }
+  { who:'meng', em:'🧋', label:'陪周萌萌探店',   sub:'她顺便帮你打掩护',             fx:()=>{ applyFx({ meng:1, risk:-1 }, 'meng'); return '周萌萌 好感 +1 · 周萌萌起疑 -1'; } }
 ];
 function visitWho(who){
   const v = VISITS.find(x => x.who === who);
@@ -3163,13 +3200,15 @@ function openApp(app){
     if(app !== 'settings') S.ap--;
     fx.clues.forEach(gainClue);
     S.stats.truth = clamp(S.stats.truth + fx.truth, 0, 20);
-    S.stats.risk = clamp(S.stats.risk + fx.risk, 0, 20);
+    addSusp(fx.risk, 'yu');
     S.snooped[app] = true;
-    if(S.stats.risk >= 7 && !S.flags.riskWarn){
+    if(syncRisk().v >= 7 && !S.flags.riskWarn){
       S.flags.riskWarn = 1;
-      pushMsg('yu', { who:'yu', kind:'text', body:'你看了我手机，对吗。', tm:'02:14' });
-      S.unread.yu = (S.unread.yu || 0) + 1;
-      toast('沈禹 发来一条消息');
+      const _w = syncRisk().who;
+      const _line = { yu:'你看了我手机，对吗。', xin:'你动过我手机？', qing:'有些东西，不该你翻。', meng:'你是不是看了不该看的？' }[_w];
+      pushMsg(_w, { who:_w, kind:'text', body:_line, tm:'02:14' });
+      S.unread[_w] = (S.unread[_w] || 0) + 1;
+      toast(CHARS[_w].name + ' 发来一条消息');
     }
   }
   S.view = { name:'phoneApp', app };
@@ -3536,7 +3575,7 @@ async function sendSticker(k){
   const line = ev.lines[th] || ev.lines[who] || (STICKER_LINES_EXTRA[th] || {})[k] || '';
   if(line) pushMsg(th, { who: who, kind:'text', body: line });
   const first = !S.flags['st_'+th+'_'+k];
-  if(first){ S.flags['st_'+th+'_'+k] = 1; applyFx(ev.fx); }
+  if(first){ S.flags['st_'+th+'_'+k] = 1; applyFx(ev.fx, ev.who); }
   render(); save();
   if(th === 'team'){
     const others = ['yu','xin','qing','meng'].filter(x => x !== ev.who && ev.lines[x]);
@@ -4276,12 +4315,13 @@ function sheetHTML(){
 /* ---------------- UI：结局 ---------------- */
 function endingHTML(){
   const e = ENDINGS[S.ending] || ENDINGS.alone;
+  const _body = (S.ending === 'be_seen' && SEEN_ALT[S.endingWho]) ? SEEN_ALT[S.endingWho] : e.body;
   const st = S.stats;
   return '<div class="ending">'
     + '<div class="ek">'+esc(e.k)+'</div>'
     + '<h2>'+esc(e.title)+'</h2>'
     + '<div class="esub">'+esc(e.sub)+' · 你是「'+fmt(S.name)+'」</div>'
-    + '<div class="body">'+fmtB(e.body)+'</div>'
+    + '<div class="body">'+fmtB(_body)+'</div>'
     + '<div class="stats">'
     + '<div><span>沈禹 · 黏</span><b>'+st.yu+'</b></div>'
     + '<div><span>周信之 · 撩</span><b>'+st.xin+'</b></div>'
